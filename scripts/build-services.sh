@@ -15,6 +15,6 @@ mvn clean package -DskipTests -pl jroom36-api -am
 cd "$PROJECT_DIR"
 
 echo "🐳 Building Docker image..."
-docker compose -f docker/docker-compose.yml build
+docker compose -f docker/docker-compose.services.yml build
 
 echo "✅ Done"

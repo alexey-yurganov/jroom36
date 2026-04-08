@@ -10,6 +10,8 @@
         <java.version>25</java.version>
         <minio.version>8.5.17</minio.version>
         <lombok.version>1.18.42</lombok.version>
+        <liquibase.version>4.29.2</liquibase.version>
+        <postgresql.version>42.7.4</postgresql.version>
     </properties>
 
     <parent>
@@ -24,16 +26,21 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>jroom36</name>
-    <description>File Storage Service with REST API, WebSocket and MinIO</description>
-    
+    <name>jroom36 | File Storage Service with REST API, WebSocket and MinIO</name>
+
     <modules>
+        <module>jroom36-db</module>
         <module>jroom36-storage</module>
         <module>jroom36-api</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.jroom36</groupId>
+                <artifactId>jroom36-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.github.jroom36</groupId>
                 <artifactId>jroom36-storage</artifactId>
@@ -49,12 +56,27 @@
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

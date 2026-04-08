@@ -15,9 +15,8 @@
     <artifactId>jroom36-storage</artifactId>
     <packaging>jar</packaging>
     
-    <name>jroom36-storage</name>
-    <description>MinIO services, repositories and entities</description>
-    
+    <name>jroom36-storage | MinIO services, repositories and entities</name>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

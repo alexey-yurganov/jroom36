@@ -1,0 +1,30 @@
+services:
+  postgresql:
+    image: postgres:18.3-alpine
+    container_name: jroom36-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_NAME:-jroom36}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jroom36-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DB_NAME:-jroom36}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  jroom36-network:
+    name: jroom36-network
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: jroom36_postgres_data

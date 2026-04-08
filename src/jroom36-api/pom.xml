@@ -15,9 +15,8 @@
     <artifactId>jroom36-api</artifactId>
     <packaging>jar</packaging>
     
-    <name>jroom36-api</name>
-    <description>REST API and WebSocket endpoints</description>
-    
+    <name>jroom36-api | REST API and WebSocket endpoints</name>
+
     <dependencies>
         <dependency>
             <groupId>com.github.jroom36</groupId>

@@ -1,12 +1,12 @@
 services:
-  app:
+  jroom36:
     build:
       context: ..
       dockerfile: docker/Dockerfile
     image: jroom36:latest
     container_name: jroom36-app
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "${JROOM36_PORT:-8080}:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-docker}
       - SERVER_PORT=8080
