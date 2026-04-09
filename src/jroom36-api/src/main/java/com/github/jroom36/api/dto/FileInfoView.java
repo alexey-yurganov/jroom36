@@ -4,7 +4,7 @@ package com.github.jroom36.api.dto;
 
 import java.util.UUID;
 
-import com.github.jroom36.storage.FileInfo;
+import com.github.jroom36.storage.files.FileInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 

@@ -3,8 +3,8 @@ package com.github.jroom36.api.controller;
 import java.io.IOException;
 
 import com.github.jroom36.api.dto.FileInfoView;
-import com.github.jroom36.storage.FileInfo;
-import com.github.jroom36.storage.FilesService;
+import com.github.jroom36.storage.files.FileInfo;
+import com.github.jroom36.storage.files.FilesService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
