@@ -2,7 +2,7 @@
 
 package com.github.jroom36.api.controller;
 
-import com.github.jroom36.api.dto.VersionResponse;
+import com.github.jroom36.api.dto.VersionView;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +19,8 @@ public class VersionController {
 	}
 
 	@GetMapping("/version")
-	public VersionResponse getVersion() {
-		return new VersionResponse(
+	public VersionView getVersion() {
+		return new VersionView(
 				buildProperties.getVersion(),
 				buildProperties.getName()
 		);

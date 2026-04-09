@@ -2,4 +2,4 @@
 
 package com.github.jroom36.api.dto;
 
-public record VersionResponse(String version, String name) {}
+public record VersionView(String version, String name) {}

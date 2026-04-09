@@ -3,7 +3,7 @@
 help:
 	@echo "Available commands:"
 	@echo "  make build   - Compile Java and Build Docker image"
-	@echo "  make start   - Update Postgres and Start all services"
+	@echo "  make start   - Start all services"
 	@echo "  make stop    - Stop all services"
 	@echo "  make logs    - View logs"
 	@echo "  make clean   - Clean everything"
@@ -28,7 +28,6 @@ build:
 	@./scripts/build-services.sh
 
 start:
-	@./scripts/update-postgres.sh
 	@./scripts/start-services.sh
 
 stop:
