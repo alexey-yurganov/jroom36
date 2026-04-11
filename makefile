@@ -1,7 +1,11 @@
 .DEFAULT_GOAL := help
 
+COMPOSE_FILE := docker/docker-compose.yml
+COMPOSE := docker compose -f $(COMPOSE_FILE)
+
 help:
 	@echo "Available commands:"
+	@echo "  make re-build   - rebuild and redeploy services"
 	@echo "  make build   - Compile Java and Build Docker image"
 	@echo "  make start   - Start all services"
 	@echo "  make stop    - Stop all services"
@@ -19,28 +23,38 @@ reset-datasources:
 	@./scripts/reset-datasources.sh
 
 start-datasources:
-	@./scripts/start-datasources.sh
+	echo "🚀 Starting Postgres, MinIO, Kafka..."
+	${COMPOSE} --profile datasources up -d
+	echo "✅ Started successfully!"
 
 stop-datasources:
-	@./scripts/stop-datasources.sh
+	echo "🛑 Stopping Postgres, MinIO, Kafka..."
+	${COMPOSE} --profile datasources down
+	echo "✅ Done"
+
+re-build: stop build start
 
 build:
 	@./scripts/build-services.sh
 
 start:
-	@./scripts/start-services.sh
+	echo "🚀 Starting jroom36..."
+	${COMPOSE} --profile app up -d
+	echo "✅ Started successfully!"
 
 stop:
-	@./scripts/stop-services.sh
+	echo "🛑 Stopping jroom36..."
+	${COMPOSE} --profile app down
+	echo "✅ Done"
 
 status:
-	@./scripts/print-status-of-services.sh
+	@./scripts/status.sh
 
 logs:
-	docker compose -f docker/docker-compose.services.yml logs -f
+	${COMPOSE} --profile app logs -f
 
 clean:
-	docker compose -f docker/docker-compose.services.yml down -v
+	${COMPOSE} --profile app down -v
 	docker rmi jroom36:latest || true
 	rm -rf */target/
 

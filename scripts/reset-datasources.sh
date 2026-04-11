@@ -22,12 +22,12 @@ fi
 
 echo ""
 echo "🛑 Stopping and removing containers, volumes, and images..."
-docker compose -f docker/docker-compose.datasources.yml down -v --rmi all
+docker compose -f docker/docker-compose.yml --profile datasources down -v --rmi all
 
 echo "🔨 Rebuilding images without cache..."
-docker compose -f docker/docker-compose.datasources.yml build --no-cache
+docker compose -f docker/docker-compose.yml --profile datasources build --no-cache
 
 echo "🚀 Starting fresh instances..."
-docker compose -f docker/docker-compose.datasources.yml up -d
+docker compose -f docker/docker-compose.yml --profile datasources up -d
 
 echo "✅ Hard reset completed successfully!"
