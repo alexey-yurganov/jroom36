@@ -6,7 +6,7 @@ File Storage Service with REST API, WebSocket and MinIO
 
 - Java 25
 - Spring Boot 4.0.5
-- PostgreSql
+- PostgreSql 18.3
 - MinIO
 - Maven
 - Docker Compose
