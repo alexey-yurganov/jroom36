@@ -2,6 +2,11 @@
 
 File Storage Service with REST API, WebSocket and MinIO
 
+Demo UI(Figma make): https://help-marsh-18266473.figma.site/
+
+<img width="1842" height="1118" alt="Weyland-Yutani" src="https://github.com/user-attachments/assets/a62663c3-ad50-4904-b532-1912b2fa9626" />
+
+
 ## Tech Stack
 
 - Java 25
