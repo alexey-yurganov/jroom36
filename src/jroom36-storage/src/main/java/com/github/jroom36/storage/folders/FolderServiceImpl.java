@@ -42,12 +42,12 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public Folder createFolder(String name) {
-		return foldersRepository.save(new FolderEntity().setName(name)).toRecord();
+	public void createFolder(String name) {
+		foldersRepository.save(new FolderEntity().setName(name)).toRecord();
 	}
 
 	@Override
-	public Folder createFolder(String name, @NotNull UUID parentFolderId) {
-		return foldersRepository.save(new FolderEntity().setName(name).setParentFolderId(parentFolderId)).toRecord();
+	public void createFolder(String name, @NotNull UUID parentFolderId) {
+		foldersRepository.save(new FolderEntity().setName(name).setParentFolderId(parentFolderId)).toRecord();
 	}
 }

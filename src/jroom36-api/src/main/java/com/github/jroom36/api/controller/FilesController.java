@@ -7,6 +7,7 @@ import com.github.jroom36.api.dto.FileInfoView;
 import com.github.jroom36.storage.files.FileInfo;
 import com.github.jroom36.storage.files.FilesService;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,13 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 
 @RestController
 @RequestMapping("/api/v1/files")
+@RequiredArgsConstructor
 public class FilesController {
-
 	private final FilesService filesService;
-
-	public FilesController(FilesService filesService) {
-		this.filesService = filesService;
-	}
 
 	@PostMapping("/upload")
 	public FileInfoView upload(@RequestParam("file") @NotNull MultipartFile file) throws IOException {
-		FileInfo fileInfo = filesService.uploadFile(file.getOriginalFilename(), file.getSize(), file.getInputStream());
+		FileInfo fileInfo = filesService.uploadFile(file.getOriginalFilename(), file.getInputStream());
 		return new FileInfoView(fileInfo);
 	}
 
@@ -42,10 +39,7 @@ public class FilesController {
 	public ResponseEntity<StreamingResponseBody> downloadFile(@PathVariable UUID id) {
 		FileInfo fileInfo = filesService.getFileInfo(id);
 
-		StreamingResponseBody stream = os -> {
-			filesService.sendTo(id, os);
-			os.flush();
-		};
+		StreamingResponseBody stream = os -> filesService.sendTo(id, os);
 
 		return ResponseEntity.ok()
 				.contentType(APPLICATION_OCTET_STREAM)

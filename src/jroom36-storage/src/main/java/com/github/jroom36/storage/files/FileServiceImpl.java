@@ -5,52 +5,56 @@ package com.github.jroom36.storage.files;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
+import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
+import com.github.jroom36.storage.files.reposiotry.FileEntity;
+import com.github.jroom36.storage.files.reposiotry.FilesRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.util.StringUtils.cleanPath;
 
 @Service
-public class FileServiceImpl implements FilesService{
-	private static final Map<UUID, FileInfo> FILES = new ConcurrentHashMap<>();
-	private static final Map<UUID, byte[]> CONTENT = new ConcurrentHashMap<>();
+@RequiredArgsConstructor
+@Transactional
+public class FileServiceImpl implements FilesService {
+	private final FilesRepository filesRepository;
 
 	@Override
-	public FileInfo uploadFile(String name, long sizeBytes, InputStream is) throws IOException {
-		String safeName = cleanPath(requireNonNull(name));
-		FileInfo fileInfo = new FileInfo(randomUUID(), safeName, sizeBytes);
-
-		try(InputStream inputStream = is) {
-			CONTENT.put(fileInfo.id(), inputStream.readAllBytes());
-		}
-
-		FILES.put(fileInfo.id(), fileInfo);
-		return fileInfo;
+	public FileInfo uploadFile(String name, InputStream is) throws IOException {
+		FileEntity fileEntity = new FileEntity()
+				.setName(cleanPath(requireNonNull(name)))
+				.setSizeBytes((long) is.available())
+				.setContent(Hibernate.getLobHelper().createBlob(is, is.available()));
+		return filesRepository.save(fileEntity).toRecord();
 	}
 
 	@Override
 	public FileInfo getFileInfo(UUID id) {
-		return FILES.get(id);
+		return filesRepository.findById(id).orElseThrow(EntityNotFoundException::new).toRecord();
 	}
 
 	@Override
 	public Page<FileInfo> getFiles(Pageable pageable) {
-		return new PageImpl<>(FILES.values().stream().skip(pageable.getOffset()).limit(pageable.getPageSize())
-				.collect(toList()),pageable, FILES.size());
+		return filesRepository.findAll(pageable).map(FileEntity::toRecord);
 	}
 
 	@Override
 	public void sendTo(UUID fileId, OutputStream os) throws IOException {
-		byte[] content = CONTENT.get(fileId);
-		os.write(content);
+		FileEntity entity = filesRepository.findById(fileId)
+				.orElseThrow(EntityNotFoundException::new);
+
+		try (InputStream is = entity.getContent().getBinaryStream()) {
+			is.transferTo(os);
+		} catch (SQLException e) {
+			throw new IOException(e);
+		}
 	}
 }

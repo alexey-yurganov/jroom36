@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FilesService {
-	FileInfo uploadFile(String name, long sizeBytes, InputStream inputStream) throws IOException;
+	FileInfo uploadFile(String name, InputStream inputStream) throws IOException;
 	FileInfo getFileInfo(UUID id);
 	Page<FileInfo> getFiles(Pageable pageable);
 	void sendTo(UUID fileId, OutputStream os) throws IOException;
