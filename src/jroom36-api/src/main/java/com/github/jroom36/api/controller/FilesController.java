@@ -30,8 +30,9 @@ public class FilesController {
 	private final FilesService filesService;
 
 	@PostMapping("/upload")
-	public FileInfoView upload(@RequestParam("file") @NotNull MultipartFile file) throws IOException {
-		FileInfo fileInfo = filesService.uploadFile(file.getOriginalFilename(), file.getInputStream());
+	public FileInfoView upload(@RequestParam("file") @NotNull MultipartFile file,
+			@RequestParam(value = "folderId", required = false) UUID folderId) throws IOException {
+		FileInfo fileInfo = filesService.uploadFile(file.getOriginalFilename(), file.getInputStream(), folderId);
 		return new FileInfoView(fileInfo);
 	}
 

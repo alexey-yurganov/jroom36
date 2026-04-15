@@ -35,8 +35,9 @@ public class FileEntity {
 	@Column(columnDefinition = "OID")
 	private Blob content;
 	private Long sizeBytes;
+	private UUID folderId;
 
 	public FileInfo toRecord() {
-		return new FileInfo(id, name, sizeBytes);
+		return new FileInfo(id, name, sizeBytes, folderId);
 	}
 }

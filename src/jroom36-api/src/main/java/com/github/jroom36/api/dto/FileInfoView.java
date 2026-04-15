@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageImpl;
 
 import static java.util.stream.Collectors.toList;
 
-public record FileInfoView(UUID id, String name, Long sizeBytes) {
+public record FileInfoView(UUID id, String name, UUID folderId, Long sizeBytes) {
 	public FileInfoView(FileInfo fileInfo) {
-		this(fileInfo.id(), fileInfo.name(), fileInfo.sizeBytes());
+		this(fileInfo.id(), fileInfo.name(), fileInfo.folderId(), fileInfo.sizeBytes());
 	}
 	public static Page<FileInfoView> makePageView(Page<FileInfo> files) {
 		return new PageImpl<>(

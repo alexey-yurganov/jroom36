@@ -28,8 +28,9 @@ public class FileServiceImpl implements FilesService {
 	private final FilesRepository filesRepository;
 
 	@Override
-	public FileInfo uploadFile(String name, InputStream is) throws IOException {
+	public FileInfo uploadFile(String name, InputStream is, UUID folderId) throws IOException {
 		FileEntity fileEntity = new FileEntity()
+				.setFolderId(folderId)
 				.setName(cleanPath(requireNonNull(name)))
 				.setSizeBytes((long) is.available())
 				.setContent(Hibernate.getLobHelper().createBlob(is, is.available()));

@@ -4,4 +4,4 @@ package com.github.jroom36.storage.files;
 
 import java.util.UUID;
 
-public record FileInfo(UUID id, String name, Long sizeBytes) {}
+public record FileInfo(UUID id, String name, Long sizeBytes, UUID folderId) {}

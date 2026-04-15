@@ -4,7 +4,6 @@ package com.github.jroom36.storage.folders.repository;
 
 import java.util.UUID;
 
-import com.github.jroom36.storage.folders.Folder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +14,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import static java.util.Collections.emptyList;
 
 @Entity
 @Table(name = "folders")
@@ -38,8 +35,5 @@ public class FolderEntity {
 	}
 	public boolean isTopLevelFolder() {
 		return !hasParentFolder();
-	}
-	public Folder toRecord() {
-		return new Folder(id, name, parentFolderId, emptyList());
 	}
 }
