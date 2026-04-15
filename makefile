@@ -13,6 +13,7 @@ help:
 	@echo "  make clean   - Clean everything"
 	@echo "  make status  - Check application status(test endpoint pinged to check status)"
 	@echo "  make update-postgres  - Update Postgres"
+	@echo "  make drop-postgres  - Drop Postgres"
 	@echo "  make reset-datasources  - Reset Postgres, MinIO, Kafka"
 	@echo "  make start-datasources  - Start Postgres, MinIO, Kafka"
 	@echo "  make stop-datasources  - Stop Postgres, MinIO, Kafka"
@@ -60,3 +61,6 @@ clean:
 
 update-postgres:
 	@./scripts/update-postgres.sh
+
+drop-postgres:
+	@./scripts/drop-postgres.sh

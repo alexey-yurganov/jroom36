@@ -1,5 +1,5 @@
 databaseChangeLog:
   - includeAll:
-      path: src/main/resources/db/changelog/v1.0.0/
+      path: v1.0.0/
 
 

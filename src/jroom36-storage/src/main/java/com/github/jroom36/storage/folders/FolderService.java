@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface FolderService {
-	Collection<Folder> getFolders();
-	void createFolder(String name);
-	void createFolder(String name, UUID parentFolderId);
+	Collection<Folder> buildFoldersTree();
+	Folder createFolder(String name);
+	Folder createFolder(String name, UUID parentFolderId);
 }

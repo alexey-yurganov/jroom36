@@ -4,4 +4,4 @@ package com.github.jroom36.storage.folders;
 import java.util.Collection;
 import java.util.UUID;
 
-public record Folder(UUID id, String name, Collection<Folder> nestedFolders) {}
+public record Folder(UUID id, String name, UUID parentFolderId, Collection<Folder> nestedFolders) {}

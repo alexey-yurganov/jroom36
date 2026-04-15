@@ -1,4 +1,38 @@
 services:
+
+  liquibase:
+    image: liquibase/liquibase:4.25
+    container_name: jroom36-liquibase
+    volumes:
+      - ../src/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
+    command: >
+      update
+      --url=jdbc:postgresql://postgres:5432/${POSTGRES_DB_NAME:-jroom36}
+      --username=${POSTGRES_USERNAME:-postgres}
+      --password=${POSTGRES_PASSWORD:-postgres}
+      --changelog-file=db.changelog-master.yaml
+    networks:
+      - jroom36-network
+    profiles:
+      - migration
+
+  liquibase-drop:
+    image: liquibase/liquibase:4.25
+    container_name: jroom36-liquibase
+    volumes:
+      - ../src/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
+    command: >
+      --changelog-file=null
+      --search-path=/tmp
+      drop-all
+      --url=jdbc:postgresql://postgres:5432/${POSTGRES_DB_NAME:-jroom36}
+      --username=${POSTGRES_USERNAME:-postgres}
+      --password=${POSTGRES_PASSWORD:-postgres}
+    networks:
+      - jroom36-network
+    profiles:
+      - drop-db
+
   postgres:
     image: postgres:18.3-alpine
     container_name: jroom36-postgres
@@ -33,11 +67,16 @@ services:
     container_name: jroom36-app
     ports:
       - "${JROOM36_PORT:-8080}:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-docker}
-      - SERVER_PORT=8080
     env_file:
       - ../.env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-docker}
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB_NAME:-jroom36}?currentSchema=public
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: public
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/v1/version"]
       interval: 30s

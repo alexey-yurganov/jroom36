@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.github.jroom36.api.dto.CreateFolderView;
 import com.github.jroom36.api.dto.FolderView;
 import com.github.jroom36.storage.folders.FolderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,16 +21,13 @@ import static java.util.Optional.ofNullable;
 
 @RestController
 @RequestMapping("/api/v1/folders")
+@RequiredArgsConstructor
 public class FoldersController {
 	private final FolderService folderService;
 
-	public FoldersController(FolderService folderService) {
-		this.folderService = folderService;
-	}
-
 	@GetMapping
 	public Collection<FolderView> getFolders() {
-		return makeFoldersView(folderService.getFolders());
+		return makeFoldersView(folderService.buildFoldersTree());
 	}
 
 	@PostMapping(path = {"/{parentFolderId}", ""})
