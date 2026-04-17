@@ -6,7 +6,7 @@ USER jroom36
 
 WORKDIR /jroom36
 
-COPY src/jroom36-api/target/jroom36-api-*.jar jroom36.jar
+COPY backend/jroom36-api/target/jroom36-api-*.jar jroom36.jar
 
 EXPOSE 8080
 

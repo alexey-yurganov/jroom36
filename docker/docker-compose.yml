@@ -4,7 +4,7 @@ services:
     image: liquibase/liquibase:4.25
     container_name: jroom36-liquibase
     volumes:
-      - ../src/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
+      - ../backend/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
     command: >
       update
       --url=jdbc:postgresql://postgres:5432/${POSTGRES_DB_NAME:-jroom36}
@@ -20,7 +20,7 @@ services:
     image: liquibase/liquibase:4.25
     container_name: jroom36-liquibase
     volumes:
-      - ../src/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
+      - ../backend/jroom36-db/src/main/resources/db/changelog:/liquibase/changelog
     command: >
       --changelog-file=null
       --search-path=/tmp
@@ -89,6 +89,39 @@ services:
     profiles:
       - app
       - full
+
+  openapi-init:
+    image: curlimages/curl:latest
+    container_name: jroom36-openapi-init
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ../openapi-spec:/specs
+    command:
+      - sh
+      - -c
+      - |
+        echo "=== OpenAPI Spec Extraction ==="
+        echo "Saving JSON spec..."
+        curl --fail --retry 3 --retry-delay 2 \
+          -o /specs/openapi.json \
+          http://app:8080/v3/api-docs
+        
+        echo "Saving YAML spec..."
+        curl --fail --retry 3 --retry-delay 2 \
+          -o /specs/openapi.yaml \
+          http://app:8080/v3/api-docs.yaml
+        
+        echo "=== Done ==="
+        echo "JSON file saved: $(wc -l < /specs/openapi.json) lines"
+        echo "YAML file saved: $(wc -l < /specs/openapi.yaml) lines"
+    networks:
+      - jroom36-network
+    profiles:
+      - app
+      - extract-openapi
+    restart: "no"
 
 networks:
   jroom36-network:
