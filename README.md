@@ -8,6 +8,7 @@ Demo UI(Figma make): https://help-marsh-18266473.figma.site/
 
 
 ## Tech Stack
+
 ### App
 - Java 25
 - Spring Boot 4.0.5
@@ -15,6 +16,68 @@ Demo UI(Figma make): https://help-marsh-18266473.figma.site/
 - MinIO(+tux for big file processing)
 - Maven
 - Docker Compose
+
+### For UI part
+ - Desktop application based on Tauri(http://tauri.app/)
+ - UI componnent with Svelte 5 and TypeScript
+ - Rust part of Tauri will be responed on isolate calls to REST API/WS
+ - Rust part will additionaly support oflline work with App and backround sync when connection will be available.
+ - Models for Rust\TypeScript, REST API client will be generated/synced automatically based on Open API Spec from Spring Boot App: https://github.com/alexey-yurganov/jroom36/blob/main/openapi-spec/openapi.yaml
+
+```mermaid
+graph TB
+    subgraph "Jroom36 Desktop Application (Tauri)"
+        subgraph "Frontend (UI Layer)"
+            UI[Svelte 5 + TypeScript UI Components]
+            Store[Frontend State Store]
+            APIClient[TypeScript API Client<br/>Auto-generated from OpenAPI]
+        end
+        
+        subgraph "Backend (Rust Layer)"
+            RustCore[Rust Core]
+            HTTPClient[REST API Client<br/>Auto-generated from OpenAPI]
+            WSClient[WebSocket Client]
+            OfflineQueue[Offline Queue<br/>& Background Sync]
+            LocalDB[Local Storage/Database]
+        end
+    end
+    
+    subgraph "External"
+        SpringBoot[Spring Boot Backend<br/>REST API + WebSocket]
+        OpenAPI[OpenAPI Specification<br/>jroom36/openapi.yaml]
+    end
+    
+    subgraph "Code Generation"
+        GenTool[OpenAPI Generator]
+    end
+    
+    %% Connections
+    OpenAPI --> GenTool
+    GenTool --> APIClient
+    GenTool --> HTTPClient
+    
+    UI --> APIClient
+    APIClient --> RustCore
+    
+    RustCore --> HTTPClient
+    RustCore --> WSClient
+    RustCore --> OfflineQueue
+    RustCore --> LocalDB
+    
+    HTTPClient --> SpringBoot
+    WSClient --> SpringBoot
+    
+    OfflineQueue --> HTTPClient
+    
+    %% Styles
+    style UI fill:#ff3e00,color:#fff
+    style RustCore fill:#de6b35,color:#fff
+    style SpringBoot fill:#6db33f,color:#fff
+    style OpenAPI fill:#85ea2d,color:#333
+    style GenTool fill:#f7df1e,color:#333
+    style OfflineQueue fill:#4a90e2,color:#fff
+    style LocalDB fill:#4a90e2,color:#fff
+```
 
 ### For chat part
 - **REST API** — send new messages, get message history per room
