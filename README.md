@@ -134,5 +134,4 @@ make clean
 
 ### API Endpoints
 
-#### Check version
-curl http://localhost:8080/api/v1/version
+https://github.com/alexey-yurganov/jroom36/blob/main/openapi-spec/openapi.yaml
