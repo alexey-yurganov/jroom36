@@ -97,7 +97,7 @@ services:
       app:
         condition: service_healthy
     volumes:
-      - ../openapi-spec:/specs
+      - ../openapi:/specs
     command:
       - sh
       - -c
@@ -122,6 +122,49 @@ services:
       - app
       - extract-openapi
     restart: "no"
+
+  build-oas3-gen:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.oas3-gen
+    image: oas3-gen-jroom36:0.25.3
+    pull_policy: build
+    profiles:
+      - build-oas3-gen
+
+  build-rust-client:
+    build:
+      context: ..
+    image: oas3-gen-jroom36:0.25.3
+    pull_policy: never
+    volumes:
+      - ../openapi:/work/openapi
+      - ../openapi/rust:/work/src
+    working_dir: /work
+    command: >
+      generate
+      --input /work/openapi/openapi.yaml
+      --output /work/src/client.rs
+      client
+    profiles:
+      - build-rust-client
+
+  build-rust-types:
+    build:
+      context: ..
+    image: oas3-gen-jroom36:0.25.3
+    pull_policy: never
+    volumes:
+      - ../openapi:/work/openapi
+      - ../openapi/rust:/work/src
+    working_dir: /work
+    command: >
+      generate
+      --input /work/openapi/openapi.yaml
+      --output /work/src/types.rs
+      types
+    profiles:
+      - build-rust-types
 
 networks:
   jroom36-network:

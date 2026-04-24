@@ -6,6 +6,9 @@ COMPOSE := docker compose -f $(COMPOSE_FILE)
 help:
 	@echo "Available commands:"
 	@echo "  make re-build   - rebuild and redeploy services"
+	@echo "  make full-rebuild-rust-client - full re-build rust client(include docker images)"
+	@echo "  make build-oas3-gen - build oas3-gen image (required for rust client generation)"
+	@echo "  make build-rust-client - build rust client"
 	@echo "  make build   - Compile Java and Build Docker image"
 	@echo "  make start   - Start all services"
 	@echo "  make stop    - Stop all services"
@@ -20,18 +23,31 @@ help:
 
 .PHONY: build start stop status logs clean reset-datasources start-datasources stop-datasources
 
+build-oas3-gen:
+	@echo "🚀 Building oas3-gen image..."
+	${COMPOSE} --profile build-oas3-gen up -d
+	@echo "✅ oas3-gen image build completed successfully!"
+
+build-rust-client:
+	@echo "🚀 Building rust client..."
+	${COMPOSE} --profile build-rust-client run --rm --remove-orphans build-rust-client
+	${COMPOSE} --profile build-rust-types run --rm --remove-orphans build-rust-types
+	@echo "✅ Rust client build completed successfully!"
+
+full-rebuild-rust-client: build-oas3-gen build-rust-client
+
 reset-datasources:
 	@./scripts/reset-datasources.sh
 
 start-datasources:
-	echo "🚀 Starting Postgres, MinIO, Kafka..."
+	@echo "🚀 Starting Postgres, MinIO, Kafka..."
 	${COMPOSE} --profile datasources up -d
-	echo "✅ Started successfully!"
+	@echo "✅ Started successfully!"
 
 stop-datasources:
-	echo "🛑 Stopping Postgres, MinIO, Kafka..."
+	@echo "🛑 Stopping Postgres, MinIO, Kafka..."
 	${COMPOSE} --profile datasources down
-	echo "✅ Done"
+	@echo "✅ Done"
 
 re-build: stop build start
 
@@ -39,14 +55,14 @@ build:
 	@./scripts/build-services.sh
 
 start:
-	echo "🚀 Starting jroom36..."
+	@echo "🚀 Starting jroom36..."
 	${COMPOSE} --profile app up -d
-	echo "✅ Started successfully!"
+	@echo "✅ Started successfully!"
 
 stop:
-	echo "🛑 Stopping jroom36..."
+	@echo "🛑 Stopping jroom36..."
 	${COMPOSE} --profile app down
-	echo "✅ Done"
+	@echo "✅ Done"
 
 status:
 	@./scripts/status.sh
@@ -57,6 +73,7 @@ logs:
 clean:
 	${COMPOSE} --profile app down -v
 	docker rmi jroom36:latest || true
+	docker rmi oas3-gen-jroom36:0.25.3 || true
 	rm -rf */target/
 
 update-postgres:

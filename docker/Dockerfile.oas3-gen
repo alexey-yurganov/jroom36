@@ -1,0 +1,18 @@
+FROM rust:1.89-alpine AS builder
+
+RUN apk add --no-cache pkgconfig openssl-dev musl-dev
+
+RUN cargo install oas3-gen --version 0.25.3 --locked
+
+RUN echo "✅ Built oas3-gen version:" && \
+    /usr/local/cargo/bin/oas3-gen --version
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=builder /usr/local/cargo/bin/oas3-gen /usr/local/bin/oas3-gen
+
+RUN /usr/local/bin/oas3-gen --version
+
+ENTRYPOINT ["oas3-gen"]
