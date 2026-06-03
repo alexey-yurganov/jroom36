@@ -15,7 +15,6 @@ services:
       - jroom36-network
     profiles:
       - migration
-
   liquibase-drop:
     image: liquibase/liquibase:4.25
     container_name: jroom36-liquibase
@@ -32,7 +31,6 @@ services:
       - jroom36-network
     profiles:
       - drop-db
-
   postgres:
     image: postgres:18.3-alpine
     container_name: jroom36-postgres
@@ -58,7 +56,6 @@ services:
       - postgres
       - datasources
       - full
-
   app:
     build:
       context: ..
@@ -89,7 +86,6 @@ services:
     profiles:
       - app
       - full
-
   openapi-init:
     image: curlimages/curl:latest
     container_name: jroom36-openapi-init
@@ -139,7 +135,7 @@ services:
     pull_policy: never
     volumes:
       - ../openapi:/work/openapi
-      - ../openapi/rust:/work/src
+      - ../openapi/rust/src:/work/src
     working_dir: /work
     command: >
       generate
@@ -156,7 +152,7 @@ services:
     pull_policy: never
     volumes:
       - ../openapi:/work/openapi
-      - ../openapi/rust:/work/src
+      - ../openapi/rust/src:/work/src
     working_dir: /work
     command: >
       generate
